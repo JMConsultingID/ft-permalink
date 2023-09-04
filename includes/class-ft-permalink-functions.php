@@ -66,6 +66,13 @@ function ft_enable_category_callback() {
           </select>';
 }
 
+function is_ft_permalink_enabled() {
+    $options = get_option('ft_permalink_settings');
+    return isset($options['enable_plugin']) && $options['enable_plugin'] == 'enable';
+}
+
+//enable plugin
+if (is_ft_permalink_enabled()) {
 // Mengubah link post
 add_filter('post_type_link', 'ft_custom_permalink_structure', 10, 2);
 function ft_custom_permalink_structure($post_link, $post) {
@@ -79,7 +86,6 @@ function ft_custom_permalink_structure($post_link, $post) {
     }
     return $post_link;
 }
-
 // Menambahkan rewrite rules
 add_action('init', 'ft_add_rewrite_rules');
 function ft_add_rewrite_rules() {
@@ -88,6 +94,29 @@ function ft_add_rewrite_rules() {
         add_rewrite_rule('^' . $options['select_cpt'] . '/([^/]+)/([^/]+)/?$', 'index.php?post_type=' . $options['select_cpt'] . '&name=$matches[2]', 'top');
     }
 }
+
+// Mengubah link kategori
+add_filter('term_link', 'ft_custom_category_permalink', 10, 3);
+function ft_custom_category_permalink($url, $term, $taxonomy) {
+    $options = get_option('ft_permalink_settings');
+    if ($taxonomy == 'category' && isset($options['select_cpt'])) {
+        return home_url($options['select_cpt'] . '/' . $term->slug . '/');
+    }
+    return $url;
+}
+
+
+// Menambahkan rewrite rules untuk kategori
+add_action('init', 'ft_add_category_rewrite_rules');
+function ft_add_category_rewrite_rules() {
+    $options = get_option('ft_permalink_settings');
+    if (isset($options['select_cpt'])) {
+        add_rewrite_rule('^' . $options['select_cpt'] . '/([^/]+)/?$', 'index.php?category_name=$matches[1]', 'top');
+    }
+}
+
+}
+// end enable plugin
 
 // Flush rewrite rules saat plugin diaktifkan
 register_activation_hook(__FILE__, 'ft_flush_rewrite_rules');
