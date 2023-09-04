@@ -101,6 +101,19 @@ function ft_add_rewrite_rules() {
     }
 }
 
+add_action('init', 'ft_modify_cpt_args');
+function ft_modify_cpt_args() {
+    $options = get_option('ft_permalink_settings');
+    if (isset($options['select_cpt'])) {
+        $post_type_object = get_post_type_object($options['select_cpt']);
+        if ($post_type_object) {
+            $post_type_object->has_archive = true;
+            register_post_type($options['select_cpt'], $post_type_object);
+        }
+    }
+}
+
+
 // Mengubah link kategori
 add_filter('term_link', 'ft_custom_category_permalink', 10, 3);
 function ft_custom_category_permalink($url, $term, $taxonomy) {
