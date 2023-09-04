@@ -118,6 +118,14 @@ function ft_add_category_rewrite_rules() {
 }
 // end enable plugin
 
+add_action('pre_get_posts', 'ft_modify_category_query');
+function ft_modify_category_query($query) {
+    if (!is_admin() && $query->is_category() && $query->is_main_query()) {
+        $query->set('post_type', 'prop-trading-firm'); // Ganti 'prop-trading-firm' dengan custom post type Anda
+    }
+}
+
+
 // Flush rewrite rules saat plugin diaktifkan
 register_activation_hook(__FILE__, 'ft_flush_rewrite_rules');
 function ft_flush_rewrite_rules() {
