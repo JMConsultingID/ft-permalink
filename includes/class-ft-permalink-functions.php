@@ -78,6 +78,7 @@ function ft_permalink_modify_cpt_args($args, $post_type) {
     }
     return $args;
 }
+add_filter('register_post_type_args', 'ft_permalink_modify_cpt_args', 10, 2);
 
 function ft_permalink_modify_category($post_link, $post, $leavename, $sample) {
     if (strpos($post_link, '%category%') !== false) {
@@ -90,17 +91,7 @@ function ft_permalink_modify_category($post_link, $post, $leavename, $sample) {
     }
     return $post_link;
 }
-
-function ft_permalink_action_filters() {
-    $options = get_option('ft_permalink_settings');
-    $plugin_enable = isset($options['enable_plugin']) ? $options['enable_plugin'] : 'disable';
-    if ($plugin_enable !== 'enable') {
-        return;
-    }
-    add_filter('register_post_type_args', 'ft_permalink_modify_cpt_args', 10, 2);
-    add_filter('post_type_link', 'ft_permalink_modify_category', 10, 4);
-}
-add_action('init', 'ft_permalink_action_filters');
+add_filter('post_type_link', 'ft_permalink_modify_category', 10, 4);
 
 function ft_permalink_action_filters_js() {
     $options = get_option('ft_permalink_settings');
