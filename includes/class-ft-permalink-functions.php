@@ -49,7 +49,7 @@ function ft_enable_plugin_callback() {
 function ft_select_cpt_callback() {
     $options = get_option('ft_permalink_settings');
     $value = isset($options['select_cpt']) ? $options['select_cpt'] : '';
-    $post_types = get_post_types(['_builtin' => false], 'objects');
+    $post_types = get_post_types(array('public' => true), 'objects');
     echo '<select name="ft_permalink_settings[select_cpt]">';
     foreach ($post_types as $post_type) {
         echo '<option value="'.$post_type->name.'" '.selected($value, $post_type->name, false).'>'.$post_type->label.'</option>';
