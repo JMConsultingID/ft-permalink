@@ -66,38 +66,38 @@ function ft_enable_category_callback() {
           </select>';
 }
 
-
-function ft_permalink_modify_cpt_args($args, $post_type) {
+// Mengubah link post
+add_filter('post_type_link', 'ft_custom_permalink_structure', 10, 2);
+function ft_custom_permalink_structure($post_link, $post) {
+    // Pastikan ini adalah custom post type yang Anda inginkan
     $options = get_option('ft_permalink_settings');
-    $cpt_value = isset($options['select_cpt']) ? $options['select_cpt'] : '';
-    if ($post_type == $cpt_value) {
-        $args['rewrite'] = array('slug' => $cpt_value . '/%category%');
-        if (!in_array('category', $args['supports'])) {
-            $args['supports'][] = 'category';
-        }
-    }
-    return $args;
-}
-
-function ft_permalink_modify_category($post_link, $post, $leavename, $sample) {
-    if (strpos($post_link, '%category%') !== false) {
-        $category_term = get_the_terms($post->ID, 'category');
-        if (!empty($category_term)) {
-            $post_link = str_replace('%category%', array_pop($category_term)->slug, $post_link);
-        } else {
-            $post_link = str_replace('%category%', 'uncategorized', $post_link);
+    if (isset($options['select_cpt']) && $post->post_type == $options['select_cpt']) {
+        $terms = get_the_terms($post->ID, 'category');
+        if ($terms) {
+            return home_url($post->post_type . '/' . $terms[0]->slug . '/' . $post->post_name . '/');
         }
     }
     return $post_link;
 }
 
-function ft_permalink_action_filters() {
+// Menambahkan rewrite rules
+add_action('init', 'ft_add_rewrite_rules');
+function ft_add_rewrite_rules() {
     $options = get_option('ft_permalink_settings');
-    $plugin_enable = isset($options['enable_plugin']) ? $options['enable_plugin'] : 'disable';
-    if ($plugin_enable !== 'enable') {
-        return;
+    if (isset($options['select_cpt'])) {
+        add_rewrite_rule('^' . $options['select_cpt'] . '/([^/]+)/([^/]+)/?$', 'index.php?post_type=' . $options['select_cpt'] . '&name=$matches[2]', 'top');
     }
-    add_filter('register_post_type_args', 'ft_permalink_modify_cpt_args', 10, 2);
-    add_filter('post_type_link', 'ft_permalink_modify_category', 10, 4);
 }
-add_action('init', 'ft_permalink_action_filters');
+
+// Flush rewrite rules saat plugin diaktifkan
+register_activation_hook(__FILE__, 'ft_flush_rewrite_rules');
+function ft_flush_rewrite_rules() {
+    ft_add_rewrite_rules();
+    flush_rewrite_rules();
+}
+
+// Flush rewrite rules saat plugin dinonaktifkan
+register_deactivation_hook(__FILE__, 'ft_flush_rewrite_rules_deactivate');
+function ft_flush_rewrite_rules_deactivate() {
+    flush_rewrite_rules();
+}
