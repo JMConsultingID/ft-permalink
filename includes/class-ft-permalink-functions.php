@@ -12,7 +12,13 @@ function ft_permalink_settings_page() {
     <div class="wrap">
         <h2>FT Permalink Settings</h2>
         <p>This is the settings page for the FT Permalink plugin. You can change the permalink structure for custom post types here.<br/> 
-        You may need to flush the rewrite rules in WordPress. You can do this by going back to Settings > Permalinks and then clicking Save Changes without changing anything.</p> <!-- Deskripsi yang ditambahkan -->
+        After making changes in the FT Permalink Plugin, do the Following:
+        <ol>
+            <li>Make sure to reactivate your plugin so that the rewrite rules are updated.</li>
+            <li>You may need to flush the rewrite rules in WordPress. You can do this by going back to <strong>"Settings" > "Permalinks"</strong> page in your WordPress dashboard and click <strong>"Save Changes"</strong> to ensure the rewrite rules are updated.</li>
+            <li>Enjoy Using this Plugin.</li>
+        </ol>
+        </p> <!-- Deskripsi yang ditambahkan -->
         <form method="post" action="options.php">
             <?php
             settings_fields('ft_permalink_settings_group');
