@@ -65,39 +65,3 @@ function ft_enable_category_callback() {
             <option value="disable" '.selected($value, 'disable', false).'>Disable</option>
           </select>';
 }
-
-
-function ft_permalink_modify_cpt_args($args, $post_type) {
-    $options = get_option('ft_permalink_settings');
-    $cpt_value = isset($options['select_cpt']) ? $options['select_cpt'] : '';
-    if ($post_type == $cpt_value) {
-        $args['rewrite'] = array('slug' => $cpt_value . '/%category%');
-        if (!in_array('category', $args['supports'])) {
-            $args['supports'][] = 'category';
-        }
-    }
-    return $args;
-}
-add_filter('register_post_type_args', 'ft_permalink_modify_cpt_args', 10, 2);
-
-function ft_permalink_modify_category($post_link, $post, $leavename, $sample) {
-    if (strpos($post_link, '%category%') !== false) {
-        $category_term = get_the_terms($post->ID, 'category');
-        if (!empty($category_term)) {
-            $post_link = str_replace('%category%', array_pop($category_term)->slug, $post_link);
-        } else {
-            $post_link = str_replace('%category%', 'uncategorized', $post_link);
-        }
-    }
-    return $post_link;
-}
-add_filter('post_type_link', 'ft_permalink_modify_category', 10, 4);
-
-function ft_permalink_action_filters_js() {
-    $options = get_option('ft_permalink_settings');
-    $cpt_value = isset($options['select_cpt']) ? $options['select_cpt'] : '';
-
-    echo '<script>alert("'.$cpt_value.'");</script>';
-    
-}
-add_action('wp_footer', 'ft_permalink_action_filters_js');
