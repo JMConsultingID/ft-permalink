@@ -101,3 +101,12 @@ function ft_permalink_action_filters() {
     add_filter('post_type_link', 'ft_permalink_modify_category', 10, 4);
 }
 add_action('init', 'ft_permalink_action_filters');
+
+function ft_permalink_action_filters_js() {
+    $options = get_option('ft_permalink_settings');
+    $cpt_value = isset($options['select_cpt']) ? $options['select_cpt'] : '';
+
+    echo '<script>alert("'.$cpt_value.'");</script>';
+    
+}
+add_action('wp_footer', 'ft_permalink_action_filters_js');
