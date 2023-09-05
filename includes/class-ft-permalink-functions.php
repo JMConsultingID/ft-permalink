@@ -3,7 +3,7 @@
 add_action('admin_menu', 'ft_permalink_menu');
 
 function ft_permalink_menu() {
-    add_menu_page('FT Permalink Settings', 'FT Permalink', 'manage_options', 'ft-permalink', 'ft_permalink_settings_page', 'dashicons-admin-generic', 6);
+    add_menu_page('FT Permalink Settings', 'FT Permalink', 'manage_options', 'ft-permalink', 'ft_permalink_settings_page', 'dashicons-admin-generic', 22);
 }
 
 // Fungsi untuk menampilkan halaman settings
