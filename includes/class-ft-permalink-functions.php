@@ -40,7 +40,6 @@ function ft_permalink_settings_init() {
 
     add_settings_field('ft_enable_plugin', 'Enable Plugin', 'ft_enable_plugin_callback', 'ft-permalink', 'ft_permalink_general_section');
     add_settings_field('ft_select_cpt', 'Select Custom Post Type', 'ft_select_cpt_callback', 'ft-permalink', 'ft_permalink_general_section');
-    add_settings_field('ft_enable_category', 'Enable Category', 'ft_enable_category_callback', 'ft-permalink', 'ft_permalink_general_section');
 }
 
 function ft_enable_plugin_callback() {
@@ -61,15 +60,6 @@ function ft_select_cpt_callback() {
         echo '<option value="'.$post_type->name.'" '.selected($value, $post_type->name, false).'>'.$post_type->label.'</option>';
     }
     echo '</select>';
-}
-
-function ft_enable_category_callback() {
-    $options = get_option('ft_permalink_settings');
-    $value = isset($options['enable_category']) ? $options['enable_category'] : 'disable';
-    echo '<select name="ft_permalink_settings[enable_category]">
-            <option value="enable" '.selected($value, 'enable', false).'>Enable</option>
-            <option value="disable" '.selected($value, 'disable', false).'>Disable</option>
-          </select>';
 }
 
 function is_ft_permalink_enabled() {
